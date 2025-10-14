@@ -35,7 +35,7 @@ const STATIC_BOTS = {
     },
     deriv_miner_pro: {
         id: 'deriv_miner_pro',
-        name: 'ENHANCED Digit Switcher VERSION 5',
+        name: 'ENHANCED Digit Switcher VERSION',
         xml: Derivminer,
         timestamp: Date.now(),
         save_type: save_types.LOCAL,
