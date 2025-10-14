@@ -9,6 +9,14 @@ import Mrduke from './bots/masterG8OVERUNDERBYSTATEFXVERSION12026.xml';
 import Recovery from './bots/OverDestroyerbystatefx.xml';
 import Sv6 from './bots/STATESDigitSwitcherV2.xml';
 
+// Ensure Blockly is available globally
+const getBlockly = () => {
+    if (typeof window !== 'undefined' && window.Blockly) {
+        return window.Blockly;
+    }
+    throw new Error('Blockly not available - workspace not initialized');
+};
+
 // Static bot configurations
 const STATIC_BOTS = {
     auto_robot: {
@@ -108,6 +116,9 @@ export const loadStrategy = async strategy_id => {
     }
 
     try {
+        // Get Blockly instance
+        const Blockly = getBlockly();
+        
         // Ensure workspace is initialized (allow early clicks from bot list)
         const waitForWorkspace = async (timeout_ms = 5000, interval_ms = 100) => {
             const start = Date.now();
@@ -134,6 +145,7 @@ export const loadStrategy = async strategy_id => {
             const blockly_doc = Blockly.utils?.xml?.textToDom?.(strategy.xml);
             xml_root = blockly_doc?.documentElement || blockly_doc;
         } catch (e) {
+            console.log('[DEBUG] Blockly parser failed, trying DOMParser:', e.message);
             const parser = new DOMParser();
             const doc = parser.parseFromString(strategy.xml, 'application/xml');
             if (doc.getElementsByTagName('parsererror').length) {
