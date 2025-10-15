@@ -19,7 +19,7 @@
     --border-radius-lg: 30px;
 
     position: relative;
-    height: 70vh;
+    height: 90vh;
     width: 100%;
     padding: 2rem;
     background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1a1a2e 100%);
@@ -27,6 +27,10 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     overflow-x: hidden;
     overflow-y: auto;
+
+    @media (max-width: 768px) {
+        height: 70vh;
+    }
 
 
     .cyberBackground {

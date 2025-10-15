@@ -4,10 +4,18 @@ import DBotStore from '../scratch/dbot-store';
 import { save_types } from '../constants/save-type';
 import AutoRobot from './bots/BRAMEVENODDPRINTER.xml';
 import OverUnderBot from './bots/Derivwizard.xml';
-import Derivminer from './bots/ENHANCEDDigitSwitcherVERSION5.xml';
-import Derivflipper from './bots/masterG8OVERUNDERBYSTATEFXVERSION12026.xml';
-import Printer from './bots/OverDestroyerbystatefx.xml';
-import Under8 from './bots/STATESDigitSwitcherV2.xml';
+import Derivminer from './bots/$hmspeedbot$.xml';
+import Derivflipper from './bots/Mrdukeov2bot.xml';
+import Printer from './bots/BRAMSPEEDBOT.xml';
+import Under8 from './bots/DoubleOverWithanalysis.xml';
+
+// Ensure Blockly is available globally
+const getBlockly = () => {
+    if (typeof window !== 'undefined' && window.Blockly) {
+        return window.Blockly;
+    }
+    throw new Error('Blockly not available - workspace not initialized');
+};
 
 // Static bot configurations
 const STATIC_BOTS = {
@@ -47,7 +55,7 @@ const STATIC_BOTS = {
         save_type: save_types.LOCAL,
     },
     under8: {
-        id: 'printer',
+        id: 'under8',
         name: 'STATES Digit Switcher V2',
         xml: Under8,
         timestamp: Date.now(),
@@ -108,6 +116,9 @@ export const loadStrategy = async strategy_id => {
     }
 
     try {
+        // Get Blockly instance
+        const Blockly = getBlockly();
+        
         // Check if workspace is initialized
         if (!Blockly.derivWorkspace) {
             console.error('[ERROR] Blockly workspace not initialized');
@@ -161,3 +172,29 @@ export const convertStrategyToIsDbot = xml_dom => {
 localStorage.removeItem('saved_workspaces');
 localStorage.removeItem('recent_strategies');
 console.log('[INFO] Cleared saved/recent bots → Static bots only.');
+
+// 🧪 Test function to verify all bots can be parsed
+export const testAllBots = () => {
+    const staticBots = getStaticBots();
+    console.log('[TEST] Testing all bot XML files...');
+    
+    staticBots.forEach(bot => {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(bot.xml, 'text/xml');
+            const hasErrors = doc.getElementsByTagName('parsererror').length > 0;
+            
+            if (hasErrors) {
+                console.error(`[TEST FAIL] ${bot.id}: XML parsing error`);
+                console.error(`[TEST FAIL] XML preview:`, bot.xml.substring(0, 300) + '...');
+            } else {
+                console.log(`[TEST PASS] ${bot.id}: XML is valid (${bot.xml.length} chars)`);
+            }
+        } catch (e) {
+            console.error(`[TEST FAIL] ${bot.id}: Exception during parsing:`, e.message);
+        }
+    });
+};
+
+// Run test on load
+setTimeout(testAllBots, 1000);
